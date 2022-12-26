@@ -1,0 +1,99 @@
+// Use this sample to create your own voice commands
+intent('hello', p => {
+    p.play('(hello|hi there). Welcome to virtual eye. Do you want a quick walkthrough the user guide');
+});
+
+intent('no',p=>{
+    p.play('ok')
+});
+
+intent('yes',p=>{
+   p.play('We have 4 features. Say scan documents to start using scan documents feature. Say scan text to start using scan texts feature. Say detect object to start using object detection feature. Say navigation through path to start detecting obstacles. You can say recap if for a quick recap to use any of these features after navigating inside them'); 
+});
+
+intent('scan texts',p=>{
+    p.play({command:'navigate',route:'/scantext'});
+    p.play('You are using scan text feature');
+    p.then(scandfeat);
+});
+
+intent('scan documents',p=>{
+   p.play({command:'navigate',route:'/scandoc'});
+   p.play('You are using scan document feature');
+   p.then(scandoc);
+   
+});
+intent('object detection',p=>{
+    p.play({command:'navigate',route:'/objdet'});
+    p.play('You are using object detection feature');
+    p.then(objd);
+})
+intent('navigation through path',p=>{
+    p.play({command:'navigate',route:'/navigationpath'});
+    p.play('You are using navigation through path feature');
+    p.then(nav);
+    
+})
+let nav=context(()=>{
+    intent('measure distance',p=>{
+        p.play({command:'distance'});
+    });
+    intent('exit',p=>{
+       p.play('Navigating back to the home screen');
+       p.play({command:'exit'});
+       p.resolve();
+    });
+});
+let objd=context(()=>{
+   intent('recap',p=>{
+      p.play(''); 
+   }); 
+    intent('exit',p=>{
+       p.play('Navigating back to the home screen');
+       p.play({command:'exit'});
+       p.resolve();
+    });
+});
+let scandoc=context(()=>{
+    intent('recap',p=>{
+        p.play('Please allow application to access media and then select a file among the ones visible on the screen. Then if you want to read the whole document say whole document else specify page number. You have to be quick here');
+    });
+    intent('whole document',p=>{
+        p.play({command:'wholedoc'});
+    });
+    intent('two',p=>{
+        p.play({command:'2'});
+    });
+    
+    projectAPI.readtext = function(p, param, callback) {
+        p.play(param.data);
+        callback();
+    };
+    intent('exit',p=>{
+       p.play('Navigating back to the home screen');
+       p.play({command:'exit'});
+       p.resolve();
+    });
+});
+
+
+
+let scandfeat=context(()=>{
+   //put intents here 
+    intent('recap',p=>{
+        p.play('Say open camera to open your camera. Then focus and click the image, and Viola. U will listen the audio translation of the image you captured');
+    });
+    intent('open camera',p=>{
+        p.play({command:'opencamera'});
+    });
+    
+    projectAPI.readtext = function(p, param, callback) {
+        p.play(param.data);
+        callback();
+    };
+    intent('exit',p=>{
+       p.play('Navigating back to the home screen');
+       p.play({command:'exit'});
+       p.resolve();
+    });
+});
